@@ -23,13 +23,8 @@ final class Parser
 
             $commaPos = strpos($line, ',');
 
-            $url = substr($line, 0, $commaPos);
-            $timestamp = substr($line, $commaPos + 1);
-
-            $date = substr($timestamp, 0, 10);
-
-
-            $path = $this->extractPath($url);
+            $date = substr($line, $commaPos + 1, 10);
+            $path = $this->extractPath($line, $commaPos);
 
 
             if (! isset($visitsByPath[$path])) {
@@ -60,13 +55,10 @@ final class Parser
         fclose($outputHandle);
     }
 
-    private function extractPath(string $url): string
+    private function extractPath(string $line, int $commaPos): string
     {
-        $pos = -1;
-        for ($i = 0; $i < 3; $i++) {
-            $pos = strpos($url, '/', $pos + 1);
-        }
+        $pathPos = strpos($line, '/', 8);
 
-        return substr($url, $pos);
+        return substr($line, $pathPos, $commaPos - $pathPos);
     }
 }
